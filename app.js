@@ -26,11 +26,11 @@ function getTransformStream(url, recLevel, replaceManager, downloadedFiles, doCr
       $ = cheerio.load(chunk);
       $('a').each(function (i, link){
         var newUrl = $(this).attr('href'); 
+        var downloadableURL = URLManager.getDownloadableURL(url,newUrl);
         var newUrlName = replaceManager.lookupName(newUrl);
         $(this).attr('href', newUrlName);
 
-        doCrawlAndDownloadResource(
-          URLManager.getDownloadableURL(url, newUrl),
+        doCrawlAndDownloadResource(downloadableURL,
           recLevel - 1, replaceManager, newUrlName, downloadedFiles); 
       }); //end $a.each
       return $.html();
