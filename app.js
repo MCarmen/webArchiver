@@ -27,7 +27,7 @@ function getTransformStream(url, recLevel, replaceManager, downloadedFiles, doCr
       $('a').each(function (i, link){
         var newUrl = $(this).attr('href'); 
         var downloadableURL = URLManager.getDownloadableURL(url,newUrl);
-        var newUrlName = replaceManager.lookupName(newUrl);
+        var newUrlName = replaceManager.lookupName(downloadableURL);
         $(this).attr('href', newUrlName);
 
         doCrawlAndDownloadResource(downloadableURL,
