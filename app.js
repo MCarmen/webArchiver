@@ -1,18 +1,16 @@
-var http = require('http');
-var request = require('request');
-var cheerio = require ('cheerio');
-var stream = require('stream');
-var fs = require('fs');
-var path = require('path');
-var url = require('url');
-var archiver = require('archiver');
+const express = require('express');
+const fetch = require('node-fetch');
+const cheerio = require ('cheerio');
+const stream = require('stream');
+const path = require('path');
+const archiver = require('archiver');
 
 
-function getTransformStream(url, recLevel, replaceManager, downloadedFiles, doCrawlAndDownloadResource) {
-  var transformStream = new stream.Transform();
-  var buffer='';
+function getTransformStream(url, recLevel, replaceManager, doCrawlAndDownloadResource) {
+  let transformStream = new stream.Transform();
+  let buffer='';
 
-  transformStream._transform = function(chunk, encoding, callback) {    
+  transformStream._transform = function(chunk, encoding, callback) {
     buffer += chunk.toString();
     callback();
   };
@@ -25,25 +23,32 @@ function getTransformStream(url, recLevel, replaceManager, downloadedFiles, doCr
   transformStream._replace = function(chunk){
       $ = cheerio.load(chunk);
       $('a').each(function (i, link){
-        var newUrl = $(this).attr('href'); 
-        var downloadableURL = URLManager.getDownloadableURL(url,newUrl);
-        var newUrlName = replaceManager.lookupName(downloadableURL);
-        $(this).attr('href', newUrlName);
+        let href = $(this).attr('href');
+        let downloadableURL = URLManager.getDownloadableURL(url,href);
+        let newhref = replaceManager.lookupName(downloadableURL);
+        $(this).attr('href', newhref);
 
-        doCrawlAndDownloadResource(downloadableURL,
-          recLevel - 1, replaceManager, newUrlName, downloadedFiles); 
+        doCrawlAndDownloadResource(downloadableURL, recLevel - 1, newhref);
+
       }); //end $a.each
       return $.html();
-  }; 
+  };
 
-  return transformStream;  
+  return transformStream;
+}//end getTransformStream
+
+//TODO function function URLManager()
+
+//TODO function ReplaceManager(maxFiles)
+
+function startCrawling(req, res){
+  let downloadedFiles = [];
 }
 
+const app = express()
+const port = 3000
 
-function routeRequests(req, res){
-  console.log("req.url: " + req.url);
 
-  // TODO
-}
+app.use(express.static(path.join(__dirname, ’public’)));
 
-http.createServer(routeRequests).listen(8081);
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
