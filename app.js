@@ -4,6 +4,8 @@ const cheerio = require ('cheerio');
 const stream = require('stream');
 const path = require('path');
 const archiver = require('archiver');
+const URLManager = require('./URLManager').URLManager;
+const ReplaceManager = require('./ReplaceManager').ReplaceManager;
 
 
 function getTransformStream(url, recLevel, replaceManager, doCrawlAndDownloadResource) {
@@ -36,10 +38,6 @@ function getTransformStream(url, recLevel, replaceManager, doCrawlAndDownloadRes
 
   return transformStream;
 }//end getTransformStream
-
-//TODO function function URLManager()
-
-//TODO function ReplaceManager(maxFiles)
 
 function startCrawling(req, res){
   let downloadedFiles = [];
